@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+const cc = require('cryptocompare');
+
 // Create a new react context
 export const AppContext = React.createContext();
 
@@ -13,6 +15,16 @@ export default class AppProvider extends Component {
             setPage: this.setPage,
             confirmFavorites: this.confirmFavorites
         }
+    }
+
+    componentDidMount = () => {
+        this.fetchCoins();
+    }
+
+    // Fetch Coins from cryptocompare
+    fetchCoins = async() => {
+        let coinList = (await cc.coinList()).Data;
+        this.setState({coinList});
     }
 
     // Confirm Favorites
