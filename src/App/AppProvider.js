@@ -21,7 +21,8 @@ export default class AppProvider extends Component {
             addCoin: this.addCoin,
             removeCoin: this.removeCoin,
             isInFavorites: this.isInFavorites,
-            confirmFavorites: this.confirmFavorites
+            confirmFavorites: this.confirmFavorites,
+            setFilteredCoins: this.setFilteredCoins
         }
     }
 
@@ -77,6 +78,8 @@ export default class AppProvider extends Component {
 
     // Set page on app
     setPage = page => this.setState({page});
+
+    setFilteredCoins = (filteredCoins) => this.setState({filteredCoins});
 
     render() {
         return (
