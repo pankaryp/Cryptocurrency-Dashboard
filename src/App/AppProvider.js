@@ -28,12 +28,35 @@ export default class AppProvider extends Component {
 
     componentDidMount = () => {
         this.fetchCoins();
+        this.fetchPrices();
     }
 
     // Fetch Coins from cryptocompare
     fetchCoins = async() => {
         let coinList = (await cc.coinList()).Data;
         this.setState({coinList});
+    }
+
+    // Fetch prices
+    fetchPrices = async () => {
+        if(this.state.firstVisit) return;
+        let prices = await this.prices();
+        // We must filter the empty price objects (not in the lecture)
+        prices = prices.filter(price => Object.keys(price).length);
+        this.setState({prices});
+    }
+
+    prices = async () => {
+        let returnData=[];
+        for(let i=0; i<this.state.favorites.length; i++) {
+            try {
+                let priceData = await cc.priceFull(this.state.favorites[i], 'USD');
+                returnData.push(priceData);
+            } catch (e) {
+                console.log('Fetch price error:', e);
+            }
+        }
+        return returnData;
     }
 
     // Add coins
@@ -59,6 +82,8 @@ export default class AppProvider extends Component {
         this.setState({
             firstVisit: false,
             page: 'dashboard'
+        }, ()=> {
+            this.fetchPrices();
         });
 
         localStorage.setItem('cryptoDash', JSON.stringify({
